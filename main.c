@@ -37,6 +37,30 @@ int main(void)
 	while(1)
 	{
 		adc_value = ADCW;
+<<<<<<< HEAD
+=======
+
+		if(adc_value > 300)
+		{
+			//PORTB = 0b00000001;
+			patroonTonen(patroon);
+		}
+		else if(adc_value >= 100 && adc_value <= 300)
+		{
+			//PORTB = 0b00000010;
+			patroonTonen(patroon);
+		}
+		else
+		{
+			//PORTB = 0b00000000;
+			patroonTonen(null);
+		}
+
+
+
+		for( i=0;i<1;i++) // i verhogen, betekent snelheid afwisseling vertragen
+		{
+>>>>>>> code van jaimy samengevoegd met mijn code
 
 //		for( i=0;i<1;i++) // i verhogen, betekent snelheid afwisseling vertragen
 //		{
