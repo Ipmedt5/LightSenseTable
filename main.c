@@ -17,6 +17,16 @@ int main(void)
 	DDRD = 0b11111100; // blauw || groen
 	DDRB = 0b11110000; // geel || wit
 
+	// Prescalers voor deelconcept Geluid, Jaimy
+	ADCSRA |= ((0<<ADPS2)|(1<<ADPS1)|(1<<ADPS0));  			//Prescaler at 128 so we have an 125Khz clock source
+	ADMUX  |= (1<<REFS0);
+	ADMUX  &= ~(1<<REFS1);               				//Avcc(+5v) as voltage reference
+	ADCSRB &= ~((1<<ADTS2)|(1<<ADTS1)|(1<<ADTS0));			//ADC in free-running mode
+	ADCSRA |= (1<<ADATE);                				//Signal source, in this case is the free-running
+	ADCSRA |= (1<<ADEN);                				//Power up the ADC
+	ADCSRA |= (1<<ADSC);                				//Start converting
+
+
 
 	uint8_t secs = 0; // teller
 	int patroon = 1; // reset naar eerste patroon, voor het leesgemak begint patroon bij 1 (patroon 1, patroon 2 enz enz)
@@ -25,6 +35,26 @@ int main(void)
 
 	while(1)
 	{
+		adc_value = ADCW;
+
+		if(adc_value > 300)
+		{
+			//PORTB = 0b00000001;
+			patroonTonen(patroon);
+		}
+		else if(adc_value >= 100 && adc_value <= 300)
+		{
+			//PORTB = 0b00000010;
+			patroonTonen(patroon);
+		}
+		else
+		{
+			//PORTB = 0b00000000;
+			patroonTonen(null);
+		}
+
+
+
 		for( i=0;i<1;i++) // i verhogen, betekent snelheid afwisseling vertragen
 		{
 
@@ -190,4 +220,6 @@ int patroonTonen(patroon)
 		_delay_us(750);
 		}
 	}
+
+	return 0;
 }
