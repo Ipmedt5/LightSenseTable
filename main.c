@@ -11,6 +11,7 @@
 #include <stdlib.h>
 
 	int patroonTonen();
+	int adc_value;		//Variable om de waarde van de ADC converter in op te slaan
 
 int main(void)
 {
@@ -37,30 +38,21 @@ int main(void)
 	{
 		adc_value = ADCW;
 
-		if(adc_value > 300)
-		{
-			//PORTB = 0b00000001;
-			patroonTonen(patroon);
-		}
-		else if(adc_value >= 100 && adc_value <= 300)
-		{
-			//PORTB = 0b00000010;
-			patroonTonen(patroon);
-		}
-		else
-		{
-			//PORTB = 0b00000000;
-			patroonTonen(null);
-		}
+//		for( i=0;i<1;i++) // i verhogen, betekent snelheid afwisseling vertragen
+//		{
 
+			if(adc_value < 200)
+			{
+				//PORTB = 0b00000001;
+				patroonTonen(patroon);
+			}
+			else
+			{
+				PORTB = 0b11111111;
+				//			patroonTonen(null);
+			}
 
-
-		for( i=0;i<1;i++) // i verhogen, betekent snelheid afwisseling vertragen
-		{
-
-			// patroon tonen, methode ophalen
-			patroonTonen(patroon);
-		}
+//		}
 
 		if (secs == 15) // aantal seconden voordat patroon veranderd. met i<1 geldt het volgende: int secs == XX is in werkelijkheid 2/3 van XX aantal seconden.
 		{
@@ -76,7 +68,7 @@ int main(void)
 
 int patroonTonen(patroon)
 {
-	unsigned int langsteTijd = 80000; // in microseconden (us)
+	unsigned int langsteTijd = 80; // in microseconden (us)
 
 	int loop; // for-loop patroon 1
 	int loop2; // for-loop patroon 4
