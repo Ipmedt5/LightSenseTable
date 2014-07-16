@@ -11,11 +11,22 @@
 #include <stdlib.h>
 
 	int patroonTonen();
+	int adc_value;		//Variable om de waarde van de ADC converter in op te slaan
 
 int main(void)
 {
 	DDRD = 0b11111100; // blauw || groen
 	DDRB = 0b11110000; // geel || wit
+
+	// Prescalers voor deelconcept Geluid, Jaimy
+	ADCSRA |= ((0<<ADPS2)|(1<<ADPS1)|(1<<ADPS0));  			//Prescaler at 128 so we have an 125Khz clock source
+	ADMUX  |= (1<<REFS0);
+	ADMUX  &= ~(1<<REFS1);               				//Avcc(+5v) as voltage reference
+	ADCSRB &= ~((1<<ADTS2)|(1<<ADTS1)|(1<<ADTS0));			//ADC in free-running mode
+	ADCSRA |= (1<<ADATE);                				//Signal source, in this case is the free-running
+	ADCSRA |= (1<<ADEN);                				//Power up the ADC
+	ADCSRA |= (1<<ADSC);                				//Start converting
+
 
 
 	uint8_t secs = 0; // teller
@@ -25,12 +36,23 @@ int main(void)
 
 	while(1)
 	{
-		for( i=0;i<1;i++) // i verhogen, betekent snelheid afwisseling vertragen
-		{
+		adc_value = ADCW;
 
-			// patroon tonen, methode ophalen
-			patroonTonen(patroon);
-		}
+//		for( i=0;i<1;i++) // i verhogen, betekent snelheid afwisseling vertragen
+//		{
+
+			if(adc_value < 200)
+			{
+				//PORTB = 0b00000001;
+				patroonTonen(patroon);
+			}
+			else
+			{
+				PORTB = 0b11111111;
+				//			patroonTonen(null);
+			}
+
+//		}
 
 		if (secs == 15) // aantal seconden voordat patroon veranderd. met i<1 geldt het volgende: int secs == XX is in werkelijkheid 2/3 van XX aantal seconden.
 		{
@@ -46,7 +68,7 @@ int main(void)
 
 int patroonTonen(patroon)
 {
-	unsigned int langsteTijd = 80000; // in microseconden (us)
+	unsigned int langsteTijd = 80; // in microseconden (us)
 
 	int loop; // for-loop patroon 1
 	int loop2; // for-loop patroon 4
@@ -190,4 +212,6 @@ int patroonTonen(patroon)
 		_delay_us(750);
 		}
 	}
+
+	return 0;
 }
